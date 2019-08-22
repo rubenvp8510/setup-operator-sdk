@@ -1,9 +1,7 @@
-// Load tempDirectory before it gets wiped by tool-cache
-let tempDirectory = process.env['RUNNER_TEMPDIRECTORY'] || '';
 import * as core from '@actions/core';
 import * as tc from '@actions/tool-cache';
+import * as fs from 'fs';
 import * as os from 'os';
-import * as path from 'path';
 import * as util from 'util';
 
 const osPlat: string = os.platform();
@@ -36,19 +34,21 @@ async function acquireOperatorSDK(version: string): Promise<string> {
     throw `Failed to download version ${version}: ${error}`;
   }
 
+  fs.chmodSync(downloadPath, '755');
+
   return await tc.cacheFile(downloadPath, 'operator-sdk', 'operator-sdk', version);
 }
 
 function getFileName(version: string): string {
   switch (osPlat) {
-        case "linux":
-            return `operator-sdk-${version}-x86_64-linux-gnu`;
-        case "win32":
-          throw `Unsupported platform: ${osPlat}`;
-        case "darwin":
-            return `operator-sdk-${version}-x86_64-apple-darwin`;
-        default:
-            throw `Unknown platform: ${osPlat}`;
+    case "linux":
+      return `operator-sdk-${version}-x86_64-linux-gnu`;
+    case "win32":
+      throw `Unsupported platform: ${osPlat}`;
+    case "darwin":
+      return `operator-sdk-${version}-x86_64-apple-darwin`;
+    default:
+      throw `Unknown platform: ${osPlat}`;
   }
 }
 
