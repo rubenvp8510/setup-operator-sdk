@@ -1,0 +1,10 @@
+name: 'Setup operator-sdk'
+description: 'Setup operator-sdk'
+author: 'Juraci Paixão Kröhling'
+inputs: 
+  minikube-version:
+    description: 'The operator-sdk version to download. Example: v0.8.1'
+    default: 'v0.8.1'
+runs:
+  using: 'node12'
+  main: 'lib/main.js'
